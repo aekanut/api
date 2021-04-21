@@ -21,9 +21,9 @@ router.post('/newMember', async (req, res, next) => {
 //API สำหรับเพิ่มข้อมูลสินค้า
 router.post('/product', async (req, res, next) => {
     try {
-        const { fruit, amount, price } = req.body;
+        const { fruit, weight, price } = req.body;
         await firestore.collection('products').doc(fruit).set({
-            amount,
+            weight,
             price
         })
         res.json({ status: 'ok', data: 'Record saved successfuly' });
@@ -52,7 +52,7 @@ router.post('/login', async (req, res, next) => {
 
 //API สำหรับเพิ่มของในตะกร้าสินค้า
 router.put('/cart', async (req, res, next) => {
-    const { fruit, amount, id } = req.body
+    const { fruit, weight, id } = req.body
     try {
         const member = await firestore.collection('members')
         console.log();
@@ -61,7 +61,7 @@ router.put('/cart', async (req, res, next) => {
         let cart = doc.data().cart
         console.log(3);
         cart[fruit] = {
-            amount: amount
+            weight: weight
         }
         await member.doc(id).update({
             cart: cart
@@ -95,7 +95,7 @@ router.put('/checkout', async (req, res, next) => {
         productDoc.forEach(doc => {
             products[doc.id] = {
                 price: doc.data().price,
-                amount: doc.data().amount
+                weight: doc.data().weight
             }
         })
 
@@ -105,11 +105,11 @@ router.put('/checkout', async (req, res, next) => {
             detail: memberCart
         }
         for (let i in memberCart) {
-            products[i].amount -= memberCart[i].amount
+            products[i].weight -= memberCart[i].weight
             await firestore.collection('products').doc(i).update({
-                amount: products[i].amount
+                weight: products[i].weight
             })
-            total.price += memberCart[i].amount * memberCart[i].price
+            total.price += memberCart[i].weight * memberCart[i].price
 
         }
 
