@@ -109,7 +109,7 @@ router.put('/checkout', async (req, res, next) => {
             await firestore.collection('products').doc(i).update({
                 weight: products[i].weight
             })
-            total.price += memberCart[i].weight * memberCart[i].price
+            total.price += memberCart[i].weight * products[i].price
 
         }
 
